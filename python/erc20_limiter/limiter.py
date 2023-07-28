@@ -77,15 +77,41 @@ class Limiter(TxFactory):
         return Limiter.__bytecode
 
 
-    def set_limit(self, contract_address, sender_address, token_address, limit, tx_format=TxFormat.JSONRPC, id_generator=None):
+    def set_limit(self, contract_address, sender_address, token_address, limit, holder_address=None, tx_format=TxFormat.JSONRPC, id_generator=None):
         enc = ABIContractEncoder()
-        enc.method('setLimit')
+        if holder_address != None:
+            enc.method('setLimitFor')
         enc.typ(ABIContractType.ADDRESS)
+        if holder_address != None:
+            enc.typ(ABIContractType.ADDRESS)
         enc.typ(ABIContractType.UINT256)
         enc.address(token_address)
+        if holder_address != None:
+            enc.address(holder_address)
         enc.uint256(limit)
         data = add_0x(enc.get())
         tx = self.template(sender_address, contract_address, use_nonce=True)
         tx = self.set_code(tx, data)
         tx = self.finalize(tx, tx_format, id_generator=id_generator)
         return tx
+
+
+    def limit_of(self, contract_address, token_address, holder_address, sender_address=ZERO_ADDRESS, id_generator=None):
+        j = JSONRPCRequest(id_generator)
+        o = j.template()
+        o['method'] = 'eth_call'
+        enc = ABIContractEncoder()
+        enc.method('limitOf')
+        enc.typ(ABIContractType.ADDRESS)
+        enc.typ(ABIContractType.ADDRESS)
+        enc.address(token_address)
+        enc.address(holder_address)
+        data = add_0x(enc.get())
+        tx = self.template(sender_address, contract_address)
+        tx = self.set_code(tx, data)
+        o['params'].append(self.normalize(tx))
+        o['params'].append('latest')
+        o = j.finalize(o)
+        return o
+
+

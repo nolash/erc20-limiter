@@ -20,7 +20,7 @@ class TestLimiter(EthTesterCase):
     def setUp(self):
         super(TestLimiter, self).setUp()
         self.conn = RPCConnection.connect(self.chain_spec, 'default')
-        self.publish_limiter()
+        self.address = self.publish_limiter()
 
 
     def publish_limiter(self):
@@ -31,5 +31,6 @@ class TestLimiter(EthTesterCase):
         o = receipt(tx_hash)
         r = self.rpc.do(o)
         self.assertEqual(r['status'], 1)
-        self.address = to_checksum_address(r['contract_address'])
-        logg.debug('published limiter on address {} with hash {}'.format(self.address, tx_hash))
+        address = to_checksum_address(r['contract_address'])
+        logg.debug('published limiter on address {} with hash {}'.format(address, tx_hash))
+        return address
