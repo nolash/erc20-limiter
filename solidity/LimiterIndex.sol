@@ -12,10 +12,16 @@ interface Limiter {
 }
 
 contract LimiterTokenRegistry {
+	address public owner;
 	Limiter limiter;
 	address holder;
 
+	// Implements EIP173
+	event OwnershipTransferred(address indexed previousOwner, address indexed newOwner); // EIP173
+
+
 	constructor(address _holder, Limiter _limiter) {
+		owner = msg.sender;
 		holder = _holder;
 		limiter = _limiter;
 	}
@@ -32,18 +38,34 @@ contract LimiterTokenRegistry {
 		limiter.setLimitFor(_token, _holder, _value);
 	}
 
+	// Implements ACL
 	function have(address _token) public view returns(bool) {
 		return limiter.limitOf(_token, holder) > 0;
+	}
+
+	// Implements EIP173
+	function transferOwnership(address _newOwner) public returns (bool) {
+		address oldOwner;
+
+		require(msg.sender == owner);
+		oldOwner = owner;
+		owner = _newOwner;
+
+		emit OwnershipTransferred(oldOwner, owner);
+		return true;
 	}
 
 	function supportsInterface(bytes4 _sum) public pure returns (bool) {
 		if (_sum == 0x01ffc9a7) { // ERC165
 			return true;
 		}
-		if (_sum == 0xb7bca625) { // AccountsIndex
+		if (_sum == 0x3ef25013) { // ACL
 			return true;
 		}
 		if (_sum == 0x23778613) { // TokenLimit
+			return true;
+		}
+		if (_sum == 0x9493f8b2) { // ERC173
 			return true;
 		}
 		return false;
