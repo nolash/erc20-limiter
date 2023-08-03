@@ -26,7 +26,12 @@ contract Limiter {
 	}
 
 	function setLimitFor(address _token, address _holder, uint256 _value) public {
-		require(msg.sender == owner || msg.sender == _holder, 'ERR_AXX');
+		uint256 sz;
+		require(msg.sender == owner ||  msg.sender == _holder, 'ERR_AXX');
+		assembly {
+			sz := extcodesize(_holder)
+		}
+		require(sz > 0, 'ERR_ACCOUNT');
 		limit[_token][_holder] = _value;
 	}
 
