@@ -43,6 +43,9 @@ contract LimiterTokenRegistry {
 		if (_sum == 0xb7bca625) { // AccountsIndex
 			return true;
 		}
+		if (_sum == 0x23778613) { // TokenLimit
+			return true;
+		}
 		return false;
 	}
 }
