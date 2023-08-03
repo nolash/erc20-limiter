@@ -35,6 +35,7 @@ contract LimiterTokenRegistry {
 	}
 
 	function setLimitFor(address _token, address _holder, uint256 _value) public {
+		require(msg.sender == owner || msg.sender == _holder, 'ERR_AXX');
 		limiter.setLimitFor(_token, _holder, _value);
 	}
 
