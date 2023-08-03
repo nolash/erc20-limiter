@@ -14,7 +14,7 @@ Values are _inclusive_; if `42` is returned, a balance up to and including `42` 
 A limit of `0` means that the "holder" will categorically not accept a token.
 
 
-### Defining limits for others
+### Defining limits for contracts
 
 An alternative `setLimitFor(token, holder, value)` method exists, where the contract `owner` may change the limit for a _smart contract_.
 
