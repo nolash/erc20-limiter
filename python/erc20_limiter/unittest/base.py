@@ -12,7 +12,7 @@ from chainlib.eth.block import block_latest
 
 # local imports
 from erc20_limiter import Limiter
-from erc20_limiter.token import LimiterTokenRegistry
+from erc20_limiter.index import LimiterIndex
 
 logg = logging.getLogger(__name__)
 
@@ -37,11 +37,11 @@ class TestLimiter(EthTesterCase):
         return address
 
 
-class TestLimiterTokenRegistry(TestLimiter):
+class TestLimiterIndex(TestLimiter):
 
     def publish_token_registry(self, holder_address, limiter_address):
         nonce_oracle = RPCNonceOracle(self.accounts[0], conn=self.conn)
-        c = LimiterTokenRegistry(self.chain_spec, signer=self.signer, nonce_oracle=nonce_oracle)
+        c = LimiterIndex(self.chain_spec, signer=self.signer, nonce_oracle=nonce_oracle)
         (tx_hash, o) = c.constructor(self.accounts[0], holder_address, limiter_address)
         self.rpc.do(o)
         o = receipt(tx_hash)

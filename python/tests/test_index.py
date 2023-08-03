@@ -8,14 +8,14 @@ from chainlib.eth.tx import receipt
 
 # local imports
 from erc20_limiter import Limiter
-from erc20_limiter.token import LimiterTokenRegistry
-from erc20_limiter.unittest import TestLimiterTokenRegistry
+from erc20_limiter.index import LimiterIndex
+from erc20_limiter.unittest import TestLimiterIndex
 
 logging.basicConfig(level=logging.DEBUG)
 logg = logging.getLogger()
 
 
-class TestLimiterBase(TestLimiterTokenRegistry):
+class TestLimiterBase(TestLimiterIndex):
 
     def setUp(self):
         super(TestLimiterBase, self).setUp()
@@ -28,7 +28,7 @@ class TestLimiterBase(TestLimiterTokenRegistry):
         nonce_oracle = RPCNonceOracle(self.accounts[0], conn=self.conn)
 
         foo_token = '2c26b46b68ffc68ff99b453c1d30413413422d70'
-        c = LimiterTokenRegistry(self.chain_spec)
+        c = LimiterIndex(self.chain_spec)
         o = c.have(self.token_registry, foo_token, sender_address=self.accounts[0])
         r = self.rpc.do(o)
         self.assertEqual(int(r, 16), 0)
@@ -40,7 +40,7 @@ class TestLimiterBase(TestLimiterTokenRegistry):
         r = self.rpc.do(o)
         self.assertEqual(r['status'], 1)
 
-        c = LimiterTokenRegistry(self.chain_spec)
+        c = LimiterIndex(self.chain_spec)
         o = c.have(self.token_registry, foo_token, sender_address=self.accounts[0])
         r = self.rpc.do(o)
         self.assertEqual(int(r, 16), 1)

@@ -32,7 +32,7 @@ from erc20_limiter.data import data_dir
 logg = logging.getLogger()
 
 
-class LimiterTokenRegistry(TxFactory):
+class LimiterIndex(TxFactory):
 
     __abi = None
     __bytecode = None
@@ -46,7 +46,7 @@ class LimiterTokenRegistry(TxFactory):
 
     @staticmethod
     def cargs(holder_address, limiter_address, version=None):
-        code = LimiterTokenRegistry.bytecode(version=version)
+        code = LimiterIndex.bytecode(version=version)
         enc = ABIContractEncoder()
         enc.address(holder_address)
         enc.address(limiter_address)
@@ -63,20 +63,20 @@ class LimiterTokenRegistry(TxFactory):
 
     @staticmethod
     def abi():
-        if LimiterTokenRegistry.__abi == None:
-            f = open(os.path.join(data_dir, 'LimiterTokenRegistry.json'), 'r')
-            LimiterTokenRegistry.__abi = json.load(f)
+        if LimiterIndex.__abi == None:
+            f = open(os.path.join(data_dir, 'LimiterIndex.json'), 'r')
+            LimiterIndex.__abi = json.load(f)
             f.close()
-        return LimiterTokenRegistry.__abi
+        return LimiterIndex.__abi
 
 
     @staticmethod
     def bytecode(version=None):
-        if LimiterTokenRegistry.__bytecode == None:
-            f = open(os.path.join(data_dir, 'LimiterTokenRegistry.bin'))
-            LimiterTokenRegistry.__bytecode = f.read()
+        if LimiterIndex.__bytecode == None:
+            f = open(os.path.join(data_dir, 'LimiterIndex.bin'))
+            LimiterIndex.__bytecode = f.read()
             f.close()
-        return LimiterTokenRegistry.__bytecode
+        return LimiterIndex.__bytecode
 
 
     def have(self, contract_address, token_address, sender_address=ZERO_ADDRESS, id_generator=None):
